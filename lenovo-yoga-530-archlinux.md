@@ -142,7 +142,7 @@ Root password:
 
 `passwd`
 
-## user (optional of course)
+## user
 
 `useradd -m -g users -G wheel USERNAME`
 
