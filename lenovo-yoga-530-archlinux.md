@@ -8,13 +8,16 @@ My original attempt was based on these linksL
 - http://ticki.github.io/blog/setting-up-archlinux-on-a-lenovo-yoga/
 - https://wiki.archlinux.org/index.php/Lenovo_ThinkPad_Yoga_S1
 
-# SETUP
+# Setup
 
 You need to get a bootable USB stick with the [arch system](https://www.archlinux.org/download/) on it. I did it on the preinstalled windows using [Rufus](https://rufus.ie/). When this is done click the restart button in the start menu while holding down shift, which gets you into the bios settings. Under "further settings", you then have to change the bootorder so that the usb is on top. Press F10 to save and quit the settings.
 
 Once you have loaded into the terminal, load the keymap you need (in my case using `loadkeys de-latin1-nodeadkeys`). To get internet, unblock the card using 
+
 `rfkill unblock all`
+
 And then connect to wifi
+
 `wifi-menu`
 
 # Make the partitions
@@ -45,114 +48,193 @@ Check `fsdisk -l` to check what the harddisk is called, for me it was /dev/nvme0
   * w
 
 Then set the filesystem type on the first two partitions (EFI and boot), using the /dev/NAME options found with fdisk -l.
+
 `mkfs.fat -F32 /dev/nvme0n1p1`
+
 `mkfs.ext2 /dev/nvme0n1p2`
 
 # Encryption!
+
 The third partition will be encrypted and contain the LVM.
+
 `cryptsetup luksFormat /dev/nvme0n1p3`
 
 Open the crypt to start the LVM formatting.
+
 `cryptsetup open --type luks /dev/nvme0n1p3 lvm`
 
 # LVM
 
 Create the physical volume (the dataalignment is necessary when using an SSD).
+
 `pvcreate --dataalignment 1m /dev/mapper/lvm`
 
 Then setup root and home: 
+
 `vgcreate LUI /dev/mapper/lvm`
+
 `lvcreate -L 30GB LUI -n lv_root`
+
 `lvcreate -l +100%FREE LUI -n lv_home`
 
 Activate the volumes:
+
 `modprobe dm_mod`
+
 `vgscan`
+
 `vgchange -ay`
 
-# Mounting & base system
+# Mounting Home and root
 
 Set the filessystem for home and root:
+
 `mkfs.ext4 /dev/LUI/lv_root`
+
 `mkfs.ext4 /dev/LUI/lv_home`
 
 Mount home and root
+
 `mount /dev/LUI/lv_root /mnt`
+
 `mkdir /mnt/boot`
+
 `mkdir /mnt/home`
+
 `mount /dev/nvme0n1p2 /mnt/boot`
+
 `mount /dev/LUI/lv_home /mnt/home`
 
 
-## install base system
+# Install base system
 
 `pacstrap -i /mnt base base-devel`
 
 Write file system table:
+
 `genfstab -U -p /mnt >> /mnt/etc/fstab`
 
 Log into newly set up root:
+
 `arch-chroot /mnt`
 
 Install base packages:
+
 `pacman -S grub efibootmgr dosfstools os-prober mtools linux-headers tlp plasma-wayland-session wpa_supplicant xf86-input-synaptics xf86-input-wacom`
 
-Make sure the drive is decrypted and the lvm recogniyed
+Make sure the drive is decrypted and the lvm recognized by putting "encrypt lvm2" between block and filesystem in the init config file:
+
+
 `nano /etc/mkinitcpio.conf`
-"encrypt lvm2" between block and filesystem
+
+Apply the changes using
+
 `mkinitcpio -p linux`
+
+# Configure root and user(s)
 
 ## locale and root password
 
-Uncomment appropriate locale:
+Uncomment appropriate locale and apply changes:
+
 `nano /etc/locale`
+
 `locale-gen`
 
 Root password:
+
 `passwd`
 
 ## user (optional of course)
+
 `useradd -m -g users -G wheel USERNAME`
+
 `passwd USERNAME`
 
 # GRUB
 
+This part is where I was running into some trouble with the links I was following and I had to experiment with the kernel options for a bit. This [link](https://askubuntu.com/questions/575651/what-is-the-difference-between-grub-cmdline-linux-and-grub-cmdline-linux-default) explains the difference between GRUB_CMDLINE_LINUX_DEFAULT and GRUB_CMDLINE_LINUX. The latter is more important and will always be executed, so the encrypted drive must be identified there.
+
+First get the EFI partition into /boot:
+
 `mkdir /boot/EFI`
+
 `mount /dev/nvme0n1p1 /boot/EFI`
+
+Install grub:
+
 `grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck`
+
+Configure grub:
+
 `nano /etc/default/grub` 
-`GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i8042.noloop i8042.nomux i8042.nopnp i8042.reset"`
-`GRUB_CMDLINE_LINUX="cryptdevice=/dev/nvme0n1p3:LUI:allow-discards"`
+
+I changed the following lines from the default:
+
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i8042.noloop i8042.nomux i8042.nopnp i8042.reset"
+
+GRUB_CMDLINE_LINUX="cryptdevice=/dev/nvme0n1p3:LUI:allow-discards"
+
+The i8042 options are for getting the touchpad and touchscreen to work. I added them later on, so I am hoping adding them here might make the touchpad work out of the box, but I can't be sure.
+
+Apply the changes to the grub config.
+
 `grub-mkconfig -o /boot/grub/grub.cfg`
 
-This is because https://askubuntu.com/questions/575651/what-is-the-difference-between-grub-cmdline-linux-and-grub-cmdline-linux-default
+# Make a SWAP file
 
+Allocate memory
 
-# SWAP
 `fallocate -l 2G /swapfile`
-`chmod 600 /swapfile`
-`mkswap /swapfile`
-`echo '/swapfile none swap sw 0 0' | tee -a /etc/fstab`
-`cat /etc/fstab`
 
-# FINISH
+Change permissions on the file (important for security!)
+
+`chmod 600 /swapfile`
+
+Assign swap
+
+`mkswap /swapfile`
+
+Add swap to fstab (check using `cat /etc/fstab`)
+
+`echo '/swapfile none swap sw 0 0' | tee -a /etc/fstab`
+
+# Exit and reboot
+
+If all went well, you can now unmount and reboot the system.
+
 `exit`
+
 `umount -a`
+
 `reboot`
 
 # Final Comments
 
-If something goes wrong: F2 during boot and go through live arch system to fix things. 
+If something goes wrong: F2 during boot and go through live arch system to fix things. imports any entries to the end of the 'linux' line. For me this generally worked out as follows, once in the arch terminal:
 
 `cryptsetup open --type luks /dev/nvme0n1p3 lvm`
+
 `lvscan`
+
 `mount /dev/LUI/lv_root /mnt`
+
 `mount /dev/nvme0n1p2 /mnt/boot`
+
 `mount /dev/LUI/lv_home /mnt/home`
+
 `arch-chroot /mnt`
+
+`rfkill unblock all`
+
+`wifi-menu`
+
 **do what you gotta do**
+
 `exit`
+
 `umount -a`
+
 `reboot`
 
 
