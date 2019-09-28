@@ -3,22 +3,16 @@
 
 Here are some notes on installing arch linux on the Lenovo Yoga 530. I set up uefi and encrypted the drive. Main goal (and challenge) is to get the touchpad and screen working. It took a few tries and I tried to update these instructions based on what worked, but can't guarantee that it wouldn't need tweaks anyway.
 
-My original attempt was based on these linksL
+My original attempt was based on these links
 - https://gitlab.com/jsherman82/notes/blob/master/arch.md
 - http://ticki.github.io/blog/setting-up-archlinux-on-a-lenovo-yoga/
 - https://wiki.archlinux.org/index.php/Lenovo_ThinkPad_Yoga_S1
 
 # Setup
 
-You need to get a bootable USB stick with the [arch system](https://www.archlinux.org/download/) on it. I did it on the preinstalled windows using [Rufus](https://rufus.ie/). When this is done click the restart button in the start menu while holding down shift, which gets you into the bios settings. Under "further settings", you then have to change the bootorder so that the usb is on top. Press F10 to save and quit the settings.
+You need to get a bootable USB stick with [arch](https://www.archlinux.org/download/) on it. I did it on the preinstalled windows 10 using [Rufus](https://rufus.ie/). When this is done click the restart button in the start menu while holding down shift, which gets you into the bios settings. Under "further settings", you then have to change the bootorder so that the usb is on top. Press F10 to save and quit the settings.
 
-Once you have loaded into the terminal, load the keymap you need (in my case using `loadkeys de-latin1-nodeadkeys`). To get internet, unblock the card using 
-
-`rfkill unblock all`
-
-And then connect to wifi
-
-`wifi-menu`
+Once you have loaded into the terminal, load the keymap you need (in my case using `loadkeys de-latin1-nodeadkeys`). To get internet, unblock the card using `rfkill unblock all` and then connect to wifi through `wifi-menu`.
 
 # Make the partitions
 Check `fsdisk -l` to check what the harddisk is called, for me it was /dev/nvme0n1 followed by p<partitionnumber>. For every partition, enter `fdisk /dev/nvme0n1` and then a set of keycodes, as follows:
@@ -47,7 +41,7 @@ Check `fsdisk -l` to check what the harddisk is called, for me it was /dev/nvme0
   * 31 (linux lvm)
   * w
 
-Then set the filesystem type on the first two partitions (EFI and boot), using the /dev/NAME options found with fdisk -l.
+Then set the filesystem type on the first two partitions (EFI and boot), using the /dev/NAME options found with fdisk -l. I will use my defaults here.
 
 `mkfs.fat -F32 /dev/nvme0n1p1`
 
@@ -69,9 +63,12 @@ Create the physical volume (the dataalignment is necessary when using an SSD).
 
 `pvcreate --dataalignment 1m /dev/mapper/lvm`
 
-Then setup root and home: 
+Create the volume group (LUI is just what I decided to call it, short names are good)
 
 `vgcreate LUI /dev/mapper/lvm`
+
+
+Then setup root and home: 
 
 `lvcreate -L 30GB LUI -n lv_root`
 
