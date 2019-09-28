@@ -1,7 +1,7 @@
 
 # Introduction
 
-Here are some notes on installing arch linux on the Lenovo Yoga 530. I set up uefi and encrypted the drive. Main goal (and challenge) is to get the touchpad and screen working. It took a few tries and I tried to update these instructions based on what worked, but can't guarantee that it wouldn't need tweaks anyway.
+Here are some notes on installing arch linux on the [Lenovo Yoga 530](https://www.lenovo.com/de/de/laptops/yoga/500-series/Yoga-530-14-Intel/p/88YG5000978). I set up uefi and encrypted the drive. Main goal (and challenge) is to get the touchpad and screen working. It took a few tries and I tried to update these instructions based on what worked, but can't guarantee that it wouldn't need tweaks anyway.
 
 My original attempt was based on these links
 - https://gitlab.com/jsherman82/notes/blob/master/arch.md
