@@ -49,7 +49,7 @@ Then set the filesystem type on the first two partitions (EFI and boot), using t
 
 # Encryption!
 
-The third partition will be encrypted and contain the LVM. I suggest a password that is the same in the default keymap, just to avoid headaches during boot if the default keymap is messed up.
+The third partition will be encrypted and contain the LVM. Note that during boot you may end up with an odd keymap, so keep that in mind when choosing the password or when encountering trouble decrypting the drive!
 
 `cryptsetup luksFormat /dev/nvme0n1p3`
 
