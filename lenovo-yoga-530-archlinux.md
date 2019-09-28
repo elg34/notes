@@ -15,7 +15,7 @@ You need to get a bootable USB stick with [arch](https://www.archlinux.org/downl
 Once you have loaded into the terminal, load the keymap you need (in my case using `loadkeys de-latin1-nodeadkeys`). To get internet, unblock the card using `rfkill unblock all` and then connect to wifi through `wifi-menu`.
 
 # Create the partitions
-Check `fsdisk -l` to check what the harddisk is called, for me it was /dev/nvme0n1 followed by p and the partitionnumber (e.g. nvme0n1 for the first partition). For every partition you want to add, enter `fdisk /dev/nvme0n1` and then a set of keycodes, as follows:
+Check `fsdisk -l` to check what the harddisk is called, for me it was /dev/nvme0n1 followed by p and the partitionnumber (e.g. nvme0n1p1 for the first partition). For every partition you want to add, enter `fdisk /dev/nvme0n1` and then a set of keycodes, as follows:
 - EFI partition:
   * g (start new table)
   * n (new partition)
