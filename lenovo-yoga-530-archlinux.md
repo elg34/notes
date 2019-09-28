@@ -240,7 +240,9 @@ If something goes wrong: F2 during boot and go through live arch system to fix t
 ## Other functions
 
 - Plasma works great with wayland
-- Used kde interface to change touchpad behaviour
+- Used kde interface to change touchpad and keyboard behaviour
+- pulseaudio works immediately with output sound
+- if using something like keepass, the kde clipboard can randomly mess copying, can be fixed in the clipboard settings
 
 
 
