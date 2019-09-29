@@ -208,7 +208,7 @@ If all went well, you can now unmount and reboot the system.
 
 # Final Comments
 
-## If you end up in the GRUB command line or less
+## If booting fails...
 
 If something goes wrong: F2 during boot and go through live arch system to fix things. imports any entries to the end of the 'linux' line. For me this generally worked out as follows, once in the arch terminal:
 
