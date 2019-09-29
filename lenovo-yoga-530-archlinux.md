@@ -150,7 +150,7 @@ Root password:
 
 # GRUB
 
-This part is where I was running into some trouble with the links I was following and I had to experiment with the kernel options for a bit. This [link](https://askubuntu.com/questions/575651/what-is-the-difference-between-grub-cmdline-linux-and-grub-cmdline-linux-default) explains the difference between GRUB_CMDLINE_LINUX_DEFAULT and GRUB_CMDLINE_LINUX. The latter is more important and will always be executed, so the encrypted drive must be identified there.
+This part is where I was running into some trouble with the links I was following and I had to experiment with the kernel parameters for a bit. This [link](https://askubuntu.com/questions/575651/what-is-the-difference-between-grub-cmdline-linux-and-grub-cmdline-linux-default) explains the difference between GRUB_CMDLINE_LINUX_DEFAULT and GRUB_CMDLINE_LINUX. The latter is more important and will always be executed, so the encrypted drive must be identified there.
 
 First get the EFI partition into /boot:
 
