@@ -241,8 +241,8 @@ If something goes wrong: F2 during boot and go through live arch system to fix t
 
 - Plasma works great with wayland
 - Used kde interface to change touchpad and keyboard behaviour
-- pulseaudio works immediately with output sound
-- if using something like keepass, the kde clipboard can randomly mess copying, can be fixed in the clipboard settings
+- pulseaudio works immediately with output sound, microphone was muted by default (fixed in kmixer)
+- if using something like keepass, the kde clipboard can randomly mess up copying, can be fixed in the clipboard settings
 
 
 
