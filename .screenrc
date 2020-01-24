@@ -1,0 +1,36 @@
+########################################################################
+#
+# ~/.screenrc
+#
+########################################################################
+
+
+########################################################################
+# General
+startup_message  off   # Keine Willkommensnachricht
+vbell            off   # Kein visuelles Blinken
+msgwait 1              # Nachrichten für 1 Sekunden anzeigen
+defutf8          on    # utf8 bei neuen fenstern
+autodetach       on    # on = default
+shell zsh
+shelltitle   'zsh'    # Fenstertitel
+hardcopydir $HOME      # Screenshots ins Homeverzeichnis
+defscrollback 10000    # Buffer
+defmonitor off         # Aktivitäten nicht in Fenstertitel schreiben
+
+########################################################################
+
+# Windows
+screen -t zsh
+screen -t zsh
+screen -t zsh
+select 1
+select 0
+
+# window bar
+#hardstatus alwayslastline "%{= G}%H    %{= Y}%w [%n %t] %{-}%+w %= | @%H | %l | %Y-%m-%d %c "
+#hardstatus alwayslastline "%{= G}%H    %{= Y}%w [%n %t] %{-}%+w %= | @%H | %l | %Y-%m-%d %c "
+#hardstatus alwayslastline "%{= KW} %H [%`] %{= Kw}|%{-} %-Lw%{= bW}%n%f %t%{-}%+Lw %=%C%a %Y-%M-%d" 
+hardstatus alwayslastline "%{= G} %H %{= Y}|%{-} %-Lw%{= G}%n%f %t%{-}%+Lw %=% %{= Y}|%{-} %d-%M-%Y %c" 
+
+# EOF
