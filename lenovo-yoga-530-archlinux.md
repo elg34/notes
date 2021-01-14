@@ -1,7 +1,9 @@
 
 # Introduction
 
-Here are some notes on installing arch linux on the [Lenovo Yoga 530](https://www.lenovo.com/de/de/laptops/yoga/500-series/Yoga-530-14-Intel/p/88YG5000978). I set up uefi and encrypted the drive. Main goal (and challenge) is to get the touchpad and screen to work. It took a few tries and I tried to update these instructions based on what worked, but can't guarantee that it wouldn't need tweaks anyway.
+Update Jan. 2020: Follow the Arch Wiki first and foremost!
+
+Here are some notes I took while installing arch linux on the [Lenovo Yoga 530](https://www.lenovo.com/de/de/laptops/yoga/500-series/Yoga-530-14-Intel/p/88YG5000978). I set up uefi and encrypted the drive.
 
 My original attempt was based on these links
 - https://gitlab.com/jsherman82/notes/blob/master/arch.md
@@ -70,7 +72,7 @@ Create the volume group (LUI is just what I decided to call it, short names are 
 
 Then setup root and home: 
 
-`lvcreate -L 30GB LUI -n lv_root`
+`lvcreate -L 70GB LUI -n lv_root`
 
 `lvcreate -l +100%FREE LUI -n lv_home`
 
@@ -105,7 +107,7 @@ Mount home and root
 
 # Install base system
 
-`pacstrap -i /mnt base base-devel`
+`pacstrap -i /mnt base base-devel linux linux-firmware`
 
 Write file system table:
 
@@ -235,15 +237,6 @@ If something goes wrong: F2 during boot and go through live arch system to fix t
 `umount -a`
 
 `reboot`
-
-
-## Other functions
-
-- Plasma works great with wayland
-- Used kde interface to change touchpad and keyboard behaviour
-- pulseaudio works immediately with output sound, microphone was muted by default (fixed in kmixer)
-- if using something like keepass, the kde clipboard can randomly mess up copying, can be fixed in the clipboard settings
-- backlight buttons prove tricky... using `xbacklight -set PERC` in console for now
 
 
 
